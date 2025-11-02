@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Receipt, Edit, Trash2, Filter, Calendar, Eye } from 'lucide-react';
+import { Plus, Receipt, Edit, Trash2, Calendar, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 import type { MonthlyPayment } from '../../types';
 import { paymentService } from '../../services/payment.service';
@@ -11,7 +11,7 @@ import { EmptyState } from '../../components/common/EmptyState';
 import { StatusBadge } from '../../components/common/StatusBadge';
 import { PaymentModal } from './PaymentModal';
 import { useOnlineStatus } from '../../hooks/useOnlineStatus';
-import { formatCurrency, getMonthName, getCurrentMonth, getCurrentYear } from '../../utils/format';
+import { formatCurrency, getMonthName, getCurrentYear } from '../../utils/format';
 import { PaymentDetailModal } from './PaymentDetailModal';
 
 export function PaymentsPage() {
@@ -24,7 +24,7 @@ export function PaymentsPage() {
         houseId: undefined as number | undefined,
         roomId: undefined as number | undefined,
         month: undefined as number | undefined,  // ← Đổi thành undefined
-        year: getCurrentYear(),
+        year: getCurrentYear() as number | undefined,
         status: undefined as string | undefined,
     });
 
