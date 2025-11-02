@@ -13,7 +13,6 @@ import { DashboardPage } from './pages/dashboard/DashboardPage';
 import { HousesPage } from './pages/houses/HousesPage';
 import { RoomsPage } from './pages/rooms/RoomsPage';
 import { PaymentsPage } from './pages/payments/PaymentsPage';
-import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -30,16 +29,6 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
-  }
-
-  return <>{children}</>;
-}
-
-function AdminRoute({ children }: { children: React.ReactNode }) {
-  const user = useAuthStore((state) => state.user);
-
-  if (!user?.isAdmin) {
-    return <Navigate to="/dashboard" replace />;
   }
 
   return <>{children}</>;
@@ -76,16 +65,6 @@ function App() {
             <Route path="houses" element={<HousesPage />} />
             <Route path="rooms" element={<RoomsPage />} />
             <Route path="payments" element={<PaymentsPage />} />
-
-            {/* Admin Routes */}
-            <Route
-              path="admin"
-              element={
-                <AdminRoute>
-                  <AdminDashboardPage />
-                </AdminRoute>
-              }
-            />
           </Route>
 
           {/* Catch all */}

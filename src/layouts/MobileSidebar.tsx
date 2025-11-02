@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Menu, X, Home, Building2, DoorOpen, Receipt, LayoutDashboard, LogOut } from 'lucide-react';
+import { Menu, X, Home, Building2, DoorOpen, Receipt, LogOut } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { cn } from '../utils/cn';
 
@@ -15,10 +15,6 @@ export function MobileSidebar() {
         { to: '/rooms', icon: DoorOpen, label: 'Phòng trọ' },
         { to: '/payments', icon: Receipt, label: 'Hóa đơn' },
     ];
-
-    const adminNavItems = user?.isAdmin
-        ? [{ to: '/admin', icon: LayoutDashboard, label: 'Quản trị' }]
-        : [];
 
     const handleLogout = () => {
         clearAuth();
@@ -71,16 +67,14 @@ export function MobileSidebar() {
                         </div>
                         <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium text-gray-900 truncate">{user?.username}</p>
-                            <p className="text-xs text-gray-500">
-                                {user?.isAdmin ? 'Quản trị viên' : 'Người dùng'}
-                            </p>
+                            <p className="text-xs text-gray-500">Người dùng</p>
                         </div>
                     </div>
                 </div>
 
                 {/* Navigation */}
                 <nav className="flex-1 p-4 space-y-1">
-                    {[...navItems, ...adminNavItems].map((item) => (
+                    {navItems.map((item) => (
                         <NavLink
                             key={item.to}
                             to={item.to}

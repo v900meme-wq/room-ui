@@ -73,11 +73,11 @@ export function RoomModal({
     };
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 overflow-y-auto">
+        <div className="fixed inset-0 bg-black/50 flex items-start justify-center p-4 z-50 overflow-y-auto">
             <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full my-8">
-                {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b border-gray-200 sticky top-0 bg-white rounded-t-xl">
-                    <h2 className="text-xl font-semibold text-gray-900">
+                {/* Header - Sticky */}
+                <div className="flex items-center justify-between p-4 md:p-6 border-b border-gray-200 sticky top-0 bg-white rounded-t-xl z-10">
+                    <h2 className="text-lg md:text-xl font-semibold text-gray-900">
                         {room ? 'Sửa phòng trọ' : 'Thêm phòng trọ'}
                     </h2>
                     <button
@@ -88,13 +88,32 @@ export function RoomModal({
                     </button>
                 </div>
 
-                {/* Form */}
-                <form onSubmit={handleSubmit} className="p-6 space-y-6">
+                {/* Form - Scrollable */}
+                <form onSubmit={handleSubmit} className="p-4 md:p-6 space-y-6 max-h-[calc(100vh-200px)] overflow-y-auto">
                     {/* Basic Info */}
                     <div className="space-y-4">
                         <h3 className="font-semibold text-gray-900">Thông tin cơ bản</h3>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="sm:col-span-2">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Nhà trọ <span className="text-red-500">*</span>
+                                </label>
+                                <select
+                                    value={formData.houseId}
+                                    onChange={(e) => setFormData({ ...formData, houseId: Number(e.target.value) })}
+                                    className="input w-full"
+                                    required
+                                >
+                                    <option value="">-- Chọn nhà trọ --</option>
+                                    {houses.map((house) => (
+                                        <option key={house.id} value={house.id}>
+                                            {house.address}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Tên phòng <span className="text-red-500">*</span>
@@ -111,20 +130,16 @@ export function RoomModal({
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Nhà trọ <span className="text-red-500">*</span>
+                                    Trạng thái
                                 </label>
                                 <select
-                                    value={formData.houseId}
-                                    onChange={(e) => setFormData({ ...formData, houseId: Number(e.target.value) })}
+                                    value={formData.status}
+                                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                                     className="input w-full"
-                                    required
                                 >
-                                    <option value="">-- Chọn nhà trọ --</option>
-                                    {houses.map((house) => (
-                                        <option key={house.id} value={house.id}>
-                                            {house.address}
-                                        </option>
-                                    ))}
+                                    <option value="available">Trống</option>
+                                    <option value="rented">Đang thuê</option>
+                                    <option value="maintenance">Bảo trì</option>
                                 </select>
                             </div>
 
@@ -173,17 +188,14 @@ export function RoomModal({
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Trạng thái
+                                    Ngày thuê
                                 </label>
-                                <select
-                                    value={formData.status}
-                                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                                <input
+                                    type="date"
+                                    value={formData.rentedAt}
+                                    onChange={(e) => setFormData({ ...formData, rentedAt: e.target.value })}
                                     className="input w-full"
-                                >
-                                    <option value="available">Trống</option>
-                                    <option value="rented">Đang thuê</option>
-                                    <option value="maintenance">Bảo trì</option>
-                                </select>
+                                />
                             </div>
                         </div>
                     </div>
@@ -272,7 +284,7 @@ export function RoomModal({
                                 />
                             </div>
 
-                            <div>
+                            <div className="sm:col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Thang máy (VNĐ)
                                 </label>
@@ -282,18 +294,6 @@ export function RoomModal({
                                     onChange={(e) => setFormData({ ...formData, elevatorFee: Number(e.target.value) })}
                                     className="input w-full"
                                     min="0"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Ngày thuê
-                                </label>
-                                <input
-                                    type="date"
-                                    value={formData.rentedAt}
-                                    onChange={(e) => setFormData({ ...formData, rentedAt: e.target.value })}
-                                    className="input w-full"
                                 />
                             </div>
                         </div>
@@ -312,26 +312,27 @@ export function RoomModal({
                             rows={3}
                         />
                     </div>
-
-                    {/* Actions */}
-                    <div className="flex gap-3 pt-4 border-t">
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="flex-1 btn btn-secondary"
-                            disabled={isLoading}
-                        >
-                            Hủy
-                        </button>
-                        <button
-                            type="submit"
-                            className="flex-1 btn btn-primary"
-                            disabled={isLoading}
-                        >
-                            {isLoading ? 'Đang lưu...' : room ? 'Cập nhật' : 'Tạo mới'}
-                        </button>
-                    </div>
                 </form>
+
+                {/* Actions - Sticky Bottom */}
+                <div className="flex gap-3 p-4 md:p-6 border-t sticky bottom-0 bg-white rounded-b-xl">
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="flex-1 btn btn-secondary"
+                        disabled={isLoading}
+                    >
+                        Hủy
+                    </button>
+                    <button
+                        type="submit"
+                        onClick={handleSubmit}
+                        className="flex-1 btn btn-primary"
+                        disabled={isLoading}
+                    >
+                        {isLoading ? 'Đang lưu...' : room ? 'Cập nhật' : 'Tạo mới'}
+                    </button>
+                </div>
             </div>
         </div>
     );

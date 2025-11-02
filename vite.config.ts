@@ -7,7 +7,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'vite.svg', 'mask-icon.svg'],
+      includeAssets: ['favicon.ico', 'brick.png', 'mask-icon.svg'],
       manifest: {
         name: 'Room Management',
         short_name: 'RoomMng',
@@ -17,17 +17,17 @@ export default defineConfig({
         display: 'standalone',
         icons: [
           {
-            src: 'vite.svg',
+            src: 'brick.png',
             sizes: '192x192',
             type: 'image/png',
           },
           {
-            src: 'vite.svg',
+            src: 'brick.png',
             sizes: '512x512',
             type: 'image/png',
           },
           {
-            src: 'vite.svg',
+            src: 'brick.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable',
@@ -38,7 +38,7 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
         runtimeCaching: [
           {
-            urlPattern: /^http:\/\/localhost:3000\/api\/.*/i,
+            urlPattern: /^http:\/\/localhost:3003\/api\/.*/i,
             handler: 'NetworkFirst',
             options: {
               cacheName: 'api-cache',
@@ -59,7 +59,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:3003',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },

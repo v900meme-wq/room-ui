@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Building2, DoorOpen, Receipt, LayoutDashboard, LogOut } from 'lucide-react';
+import { Home, Building2, DoorOpen, Receipt, LogOut } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { cn } from '../utils/cn';
 
@@ -13,10 +13,6 @@ export function Sidebar() {
         { to: '/rooms', icon: DoorOpen, label: 'Phòng trọ' },
         { to: '/payments', icon: Receipt, label: 'Hóa đơn' },
     ];
-
-    const adminNavItems = user?.isAdmin
-        ? [{ to: '/admin', icon: LayoutDashboard, label: 'Quản trị' }]
-        : [];
 
     return (
         <div className="w-64 bg-white border-r border-gray-200 flex flex-col h-screen">
@@ -35,16 +31,14 @@ export function Sidebar() {
                     </div>
                     <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-gray-900 truncate">{user?.username}</p>
-                        <p className="text-xs text-gray-500">
-                            {user?.isAdmin ? 'Quản trị viên' : 'Người dùng'}
-                        </p>
+                        <p className="text-xs text-gray-500">Người dùng</p>
                     </div>
                 </div>
             </div>
 
             {/* Navigation */}
             <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-                {[...navItems, ...adminNavItems].map((item) => (
+                {navItems.map((item) => (
                     <NavLink
                         key={item.to}
                         to={item.to}

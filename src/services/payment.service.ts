@@ -9,10 +9,20 @@ export const paymentService = {
         status?: string;
     }): Promise<MonthlyPayment[]> => {
         const params = new URLSearchParams();
-        if (filters?.roomId) params.append('roomId', filters.roomId.toString());
-        if (filters?.month) params.append('month', filters.month.toString());
-        if (filters?.year) params.append('year', filters.year.toString());
-        if (filters?.status) params.append('status', filters.status);
+
+        // Chỉ append khi có giá trị
+        if (filters?.roomId !== undefined && filters.roomId > 0) {
+            params.append('roomId', filters.roomId.toString());
+        }
+        if (filters?.month !== undefined && filters.month > 0) {
+            params.append('month', filters.month.toString());
+        }
+        if (filters?.year !== undefined && filters.year > 0) {
+            params.append('year', filters.year.toString());
+        }
+        if (filters?.status) {
+            params.append('status', filters.status);
+        }
 
         const url = params.toString() ? `/payments?${params}` : '/payments';
         const response = await api.get<MonthlyPayment[]>(url);

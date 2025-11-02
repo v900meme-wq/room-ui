@@ -16,10 +16,10 @@ export function PaymentDetailModal({ payment, onClose, onEdit }: PaymentDetailMo
     const waterCost = waterUsage * payment.waterPrice;
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 overflow-y-auto">
+        <div className="fixed inset-0 bg-black/50 flex items-start justify-center p-4 z-50 overflow-y-auto">
             <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full my-8">
-                {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                {/* Header - Sticky */}
+                <div className="sticky top-0 bg-white flex items-center justify-between p-6 border-b border-gray-200 rounded-t-xl z-10">
                     <div className="flex-1">
                         <h2 className="text-xl font-semibold text-gray-900">Chi tiết hóa đơn</h2>
                         <p className="text-sm text-gray-600 mt-1">
@@ -34,8 +34,8 @@ export function PaymentDetailModal({ payment, onClose, onEdit }: PaymentDetailMo
                     </button>
                 </div>
 
-                {/* Content */}
-                <div className="p-6 space-y-6">
+                {/* Content - Scrollable */}
+                <div className="p-6 space-y-6 max-h-[calc(100vh-240px)] overflow-y-auto">
                     {/* Room Info */}
                     <div className="space-y-3">
                         <h3 className="font-semibold text-gray-900 flex items-center gap-2">
@@ -49,16 +49,16 @@ export function PaymentDetailModal({ payment, onClose, onEdit }: PaymentDetailMo
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-gray-600">Địa chỉ:</span>
-                                <span className="font-medium">{payment.room?.house?.address}</span>
+                                <span className="font-medium text-right">{payment.room?.house?.address}</span>
                             </div>
-                            <div className="flex justify-between items-center">
+                            <div className="flex justify-between items-start">
                                 <span className="text-gray-600">Người thuê:</span>
                                 <div className="text-right">
-                                    <p className="font-medium flex items-center gap-2">
+                                    <p className="font-medium flex items-center gap-2 justify-end">
                                         <User className="w-4 h-4" />
                                         {payment.room?.renter}
                                     </p>
-                                    <p className="text-sm text-gray-600 flex items-center gap-2">
+                                    <p className="text-sm text-gray-600 flex items-center gap-2 justify-end mt-1">
                                         <Phone className="w-4 h-4" />
                                         {payment.room?.phone && formatPhoneNumber(payment.room.phone)}
                                     </p>
@@ -168,7 +168,7 @@ export function PaymentDetailModal({ payment, onClose, onEdit }: PaymentDetailMo
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-sm text-primary-600 mb-1">Tổng cộng</p>
-                                <p className="text-4xl font-bold text-primary-900">
+                                <p className="text-3xl md:text-4xl font-bold text-primary-900">
                                     {formatCurrency(payment.totalAmount)}
                                 </p>
                                 <p className="text-xs text-primary-600 mt-2">
@@ -187,8 +187,8 @@ export function PaymentDetailModal({ payment, onClose, onEdit }: PaymentDetailMo
                     )}
                 </div>
 
-                {/* Actions */}
-                <div className="flex gap-3 p-6 border-t border-gray-200">
+                {/* Actions - Sticky */}
+                <div className="sticky bottom-0 bg-white flex gap-3 p-6 border-t border-gray-200 rounded-b-xl">
                     <button onClick={onClose} className="flex-1 btn btn-secondary">
                         Đóng
                     </button>
