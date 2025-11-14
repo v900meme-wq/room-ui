@@ -1,16 +1,20 @@
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
     Home,
     Building2,
     DoorOpen,
     Receipt,
-    AlertCircle
+    AlertCircle,
+    ChevronLeft,
+    ChevronRight
 } from 'lucide-react';
 import { houseService } from '../../services/house.service';
 import { roomService } from '../../services/room.service';
 import { paymentService } from '../../services/payment.service';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
-import { formatCurrency } from '../../utils/format';
+import { StatusBadge } from '../../components/common/StatusBadge';
+import { formatCurrency, getCurrentMonth, getCurrentYear, getMonthName } from '../../utils/format';
 import { cn } from '../../utils/cn';
 
 interface StatCardProps {
@@ -44,6 +48,11 @@ function StatCard({ icon: Icon, label, value, variant = 'default' }: StatCardPro
 }
 
 export function DashboardPage() {
+    const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth());
+    const [selectedYear, setSelectedYear] = useState(getCurrentYear());
+    const [availableRoomsPage, setAvailableRoomsPage] = useState(1);
+    const ROOMS_PER_PAGE = 6;
+
     const { data: houses, isLoading: housesLoading } = useQuery({
         queryKey: ['houses'],
         queryFn: () => houseService.getAll(),
@@ -51,12 +60,15 @@ export function DashboardPage() {
 
     const { data: rooms, isLoading: roomsLoading } = useQuery({
         queryKey: ['rooms'],
-        queryFn: () => roomService.getAll(),
+        queryFn: () => roomService.getRoomsByUser(),
     });
 
     const { data: payments, isLoading: paymentsLoading } = useQuery({
-        queryKey: ['payments'],
-        queryFn: () => paymentService.getAll(),
+        queryKey: ['payments', selectedMonth, selectedYear],
+        queryFn: () => paymentService.getAll({
+            month: selectedMonth,
+            year: selectedYear,
+        }),
     });
 
     const isLoading = housesLoading || roomsLoading || paymentsLoading;
@@ -68,12 +80,38 @@ export function DashboardPage() {
     const totalHouses = houses?.length || 0;
     const totalRooms = rooms?.length || 0;
     const occupiedRooms = rooms?.filter((r) => r.status === 'rented').length || 0;
+    const availableRooms = rooms?.filter((r) => r.status === 'available') || [];
     const unpaidPayments = payments?.filter((p) => p.status === 'unpaid') || [];
 
     const totalRevenue = payments?.reduce((sum, p) => sum + p.totalAmount, 0) || 0;
     const paidRevenue = payments
         ?.filter((p) => p.status === 'paid')
         .reduce((sum, p) => sum + p.totalAmount, 0) || 0;
+
+    // Pagination for available rooms
+    const totalAvailablePages = Math.ceil(availableRooms.length / ROOMS_PER_PAGE);
+    const paginatedAvailableRooms = availableRooms.slice(
+        (availableRoomsPage - 1) * ROOMS_PER_PAGE,
+        availableRoomsPage * ROOMS_PER_PAGE
+    );
+
+    const handlePrevMonth = () => {
+        if (selectedMonth === 1) {
+            setSelectedMonth(12);
+            setSelectedYear(selectedYear - 1);
+        } else {
+            setSelectedMonth(selectedMonth - 1);
+        }
+    };
+
+    const handleNextMonth = () => {
+        if (selectedMonth === 12) {
+            setSelectedMonth(1);
+            setSelectedYear(selectedYear + 1);
+        } else {
+            setSelectedMonth(selectedMonth + 1);
+        }
+    };
 
     return (
         <div className="space-y-6">
@@ -113,7 +151,26 @@ export function DashboardPage() {
 
             {/* Revenue */}
             <div className="card">
-                <h3 className="text-lg font-semibold mb-4">Doanh thu</h3>
+                <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold">Doanh thu tháng {selectedMonth}/{selectedYear}</h3>
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={handlePrevMonth}
+                            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                        >
+                            <ChevronLeft className="w-5 h-5" />
+                        </button>
+                        <span className="text-sm text-gray-600 min-w-[100px] text-center">
+                            {getMonthName(selectedMonth)} {selectedYear}
+                        </span>
+                        <button
+                            onClick={handleNextMonth}
+                            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                        >
+                            <ChevronRight className="w-5 h-5" />
+                        </button>
+                    </div>
+                </div>
                 <div className="space-y-4">
                     <div>
                         <div className="flex justify-between items-center mb-2">
@@ -171,6 +228,67 @@ export function DashboardPage() {
                                     <p className="font-semibold text-yellow-600">
                                         {formatCurrency(payment.totalAmount)}
                                     </p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {/* Available Rooms */}
+            {availableRooms.length > 0 && (
+                <div className="card">
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-lg font-semibold flex items-center gap-2">
+                            <DoorOpen className="w-5 h-5 text-blue-600" />
+                            Phòng trống ({availableRooms.length})
+                        </h3>
+                        {totalAvailablePages > 1 && (
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() => setAvailableRoomsPage(Math.max(1, availableRoomsPage - 1))}
+                                    disabled={availableRoomsPage === 1}
+                                    className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    <ChevronLeft className="w-4 h-4" />
+                                </button>
+                                <span className="text-sm text-gray-600">
+                                    {availableRoomsPage} / {totalAvailablePages}
+                                </span>
+                                <button
+                                    onClick={() => setAvailableRoomsPage(Math.min(totalAvailablePages, availableRoomsPage + 1))}
+                                    disabled={availableRoomsPage === totalAvailablePages}
+                                    className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    <ChevronRight className="w-4 h-4" />
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {paginatedAvailableRooms.map((room) => (
+                            <div
+                                key={room.id}
+                                className="p-4 bg-blue-50 border border-blue-200 rounded-lg hover:shadow-md transition-shadow"
+                            >
+                                <div className="flex items-start justify-between mb-3">
+                                    <div className="flex-1">
+                                        <h4 className="font-semibold text-gray-900">{room.roomName}</h4>
+                                        <p className="text-xs text-gray-600 mt-1">{room.house?.address}</p>
+                                    </div>
+                                    <StatusBadge status={room.status} />
+                                </div>
+                                <div className="space-y-2 text-sm">
+                                    <div className="flex justify-between">
+                                        <span className="text-gray-600">Diện tích:</span>
+                                        <span className="font-medium">{room.area} m²</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-gray-600">Giá phòng:</span>
+                                        <span className="font-semibold text-primary-600">
+                                            {formatCurrency(room.roomPrice)}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         ))}

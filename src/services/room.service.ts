@@ -13,6 +13,11 @@ export const roomService = {
         return response.data;
     },
 
+    getRoomsByUser: async (): Promise<Room[]> => {
+        const response = await api.get<Room[]>(`/rooms/user`);
+        return response.data;
+    },
+
     create: async (data: Partial<Room>): Promise<Room> => {
         const response = await api.post<Room>('/rooms', data);
         return response.data;
