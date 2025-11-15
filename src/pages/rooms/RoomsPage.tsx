@@ -222,6 +222,12 @@ export function RoomsPage() {
                                     </p>
                                 </div>
                                 <div className="bg-gray-50 rounded-lg p-2">
+                                    <p className="text-gray-600">Gửi xe</p>
+                                    <p className="font-semibold text-gray-900">
+                                        {formatCurrency(room.parkingFee)}
+                                    </p>
+                                </div>
+                                <div className="bg-gray-50 rounded-lg p-2">
                                     <p className="text-gray-600">Thang máy</p>
                                     <p className="font-semibold text-gray-900">
                                         {formatCurrency(room.elevatorFee)}

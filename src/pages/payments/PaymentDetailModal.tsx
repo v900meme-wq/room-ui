@@ -1,4 +1,4 @@
-import { X, Edit, Calendar, User, Phone, Home, Zap, Droplet, Trash, WashingMachine, Columns2 } from 'lucide-react';
+import { X, Edit, Calendar, User, Phone, Home, Zap, Droplet, Trash, WashingMachine, Columns2, Car } from 'lucide-react';
 import type { MonthlyPayment } from '../../types';
 import { formatCurrency, formatPhoneNumber, formatDateTime } from '../../utils/format';
 import { StatusBadge } from '../../components/common/StatusBadge';
@@ -145,6 +145,13 @@ export function PaymentDetailModal({ payment, onClose, onEdit }: PaymentDetailMo
                                     Phí rác:
                                 </span>
                                 <span className="font-medium">{formatCurrency(payment.trashFee)}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-600 flex items-center gap-2">
+                                    <Car className="w-4 h-4" />
+                                    Gửi xe:
+                                </span>
+                                <span className="font-medium">{formatCurrency(payment.parkingFee)}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-gray-600 flex items-center gap-2">

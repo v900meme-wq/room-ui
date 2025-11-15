@@ -18,10 +18,10 @@ interface PaymentModalProps {
 export function PaymentModal({ payment, onClose, onSubmit, isLoading }: PaymentModalProps) {
     const [selectedHouseId, setSelectedHouseId] = useState<number | undefined>();
     const [formData, setFormData] = useState({
-        electStart: 0,
-        electEnd: 0,
-        waterStart: 0,
-        waterEnd: 0,
+        electStart: '' as string | number,
+        electEnd: '' as string | number,
+        waterStart: '' as string | number,
+        waterEnd: '' as string | number,
         month: getCurrentMonth(),
         year: getCurrentYear(),
         status: 'unpaid',
@@ -49,11 +49,6 @@ export function PaymentModal({ payment, onClose, onSubmit, isLoading }: PaymentM
         enabled: !!formData.roomId && !payment,
     });
 
-    // Debug log
-    console.log('Recent Data:', recentData);
-    console.log('Is Creating:', !payment);
-    console.log('Room ID:', formData.roomId);
-
     // Get selected room for price calculation
     const selectedRoom = rooms?.find(r => r.id === formData.roomId);
 
@@ -79,23 +74,36 @@ export function PaymentModal({ payment, onClose, onSubmit, isLoading }: PaymentM
         if (recentData?.suggestion && !payment) {
             setFormData(prev => ({
                 ...prev,
-                electStart: recentData.suggestion?.suggestedElectStart ?? 0,
-                waterStart: recentData.suggestion?.suggestedWaterStart ?? 0,
+                electStart: recentData.suggestion?.suggestedElectStart ?? '',
+                waterStart: recentData.suggestion?.suggestedWaterStart ?? '',
             }));
         }
     }, [recentData, payment]);
 
+    const handleNumberChange = (field: string, value: string) => {
+        // Allow empty string or valid number
+        if (value === '' || !isNaN(Number(value))) {
+            setFormData({ ...formData, [field]: value });
+        }
+    };
+
     const calculateTotal = () => {
         if (!selectedRoom) return 0;
 
-        const electUsage = formData.electEnd - formData.electStart;
-        const waterUsage = formData.waterEnd - formData.waterStart;
+        const electStart = formData.electStart === '' ? 0 : Number(formData.electStart);
+        const electEnd = formData.electEnd === '' ? 0 : Number(formData.electEnd);
+        const waterStart = formData.waterStart === '' ? 0 : Number(formData.waterStart);
+        const waterEnd = formData.waterEnd === '' ? 0 : Number(formData.waterEnd);
+
+        const electUsage = electEnd - electStart;
+        const waterUsage = waterEnd - waterStart;
 
         return (
             selectedRoom.roomPrice +
             electUsage * selectedRoom.electPrice +
             waterUsage * selectedRoom.waterPrice +
             selectedRoom.trashFee +
+            selectedRoom.parkingFee +
             selectedRoom.washingMachineFee +
             selectedRoom.elevatorFee
         );
@@ -110,17 +118,28 @@ export function PaymentModal({ payment, onClose, onSubmit, isLoading }: PaymentM
             return;
         }
 
-        if (formData.electEnd < formData.electStart) {
+        const electStart = formData.electStart === '' ? 0 : Number(formData.electStart);
+        const electEnd = formData.electEnd === '' ? 0 : Number(formData.electEnd);
+        const waterStart = formData.waterStart === '' ? 0 : Number(formData.waterStart);
+        const waterEnd = formData.waterEnd === '' ? 0 : Number(formData.waterEnd);
+
+        if (electEnd < electStart) {
             alert('Chỉ số điện cuối phải lớn hơn hoặc bằng chỉ số đầu');
             return;
         }
 
-        if (formData.waterEnd < formData.waterStart) {
+        if (waterEnd < waterStart) {
             alert('Chỉ số nước cuối phải lớn hơn hoặc bằng chỉ số đầu');
             return;
         }
 
-        onSubmit(formData);
+        onSubmit({
+            ...formData,
+            electStart,
+            electEnd,
+            waterStart,
+            waterEnd,
+        });
     };
 
     return (
@@ -299,8 +318,9 @@ export function PaymentModal({ payment, onClose, onSubmit, isLoading }: PaymentM
                                 <input
                                     type="number"
                                     value={formData.electStart}
-                                    onChange={(e) => setFormData({ ...formData, electStart: Number(e.target.value) })}
+                                    onChange={(e) => handleNumberChange('electStart', e.target.value)}
                                     className="input w-full"
+                                    placeholder="0"
                                     min="0"
                                     required
                                 />
@@ -313,8 +333,9 @@ export function PaymentModal({ payment, onClose, onSubmit, isLoading }: PaymentM
                                 <input
                                     type="number"
                                     value={formData.electEnd}
-                                    onChange={(e) => setFormData({ ...formData, electEnd: Number(e.target.value) })}
+                                    onChange={(e) => handleNumberChange('electEnd', e.target.value)}
                                     className="input w-full"
+                                    placeholder="0"
                                     min="0"
                                     required
                                 />
@@ -327,8 +348,9 @@ export function PaymentModal({ payment, onClose, onSubmit, isLoading }: PaymentM
                                 <input
                                     type="number"
                                     value={formData.waterStart}
-                                    onChange={(e) => setFormData({ ...formData, waterStart: Number(e.target.value) })}
+                                    onChange={(e) => handleNumberChange('waterStart', e.target.value)}
                                     className="input w-full"
+                                    placeholder="0"
                                     min="0"
                                     required
                                 />
@@ -341,8 +363,9 @@ export function PaymentModal({ payment, onClose, onSubmit, isLoading }: PaymentM
                                 <input
                                     type="number"
                                     value={formData.waterEnd}
-                                    onChange={(e) => setFormData({ ...formData, waterEnd: Number(e.target.value) })}
+                                    onChange={(e) => handleNumberChange('waterEnd', e.target.value)}
                                     className="input w-full"
+                                    placeholder="0"
                                     min="0"
                                     required
                                 />
@@ -353,8 +376,12 @@ export function PaymentModal({ payment, onClose, onSubmit, isLoading }: PaymentM
                             <div className="bg-gray-50 rounded-lg p-4 text-sm">
                                 <p className="text-gray-600 mb-2">Tiêu thụ:</p>
                                 <div className="grid grid-cols-2 gap-2">
-                                    <span>Điện: {formData.electEnd - formData.electStart} số × {formatCurrency(selectedRoom.electPrice)} = <strong>{formatCurrency((formData.electEnd - formData.electStart) * selectedRoom.electPrice)}</strong></span>
-                                    <span>Nước: {formData.waterEnd - formData.waterStart} số × {formatCurrency(selectedRoom.waterPrice)} = <strong>{formatCurrency((formData.waterEnd - formData.waterStart) * selectedRoom.waterPrice)}</strong></span>
+                                    <span>
+                                        Điện: {(formData.electEnd === '' ? 0 : Number(formData.electEnd)) - (formData.electStart === '' ? 0 : Number(formData.electStart))} số × {formatCurrency(selectedRoom.electPrice)} = <strong>{formatCurrency(((formData.electEnd === '' ? 0 : Number(formData.electEnd)) - (formData.electStart === '' ? 0 : Number(formData.electStart))) * selectedRoom.electPrice)}</strong>
+                                    </span>
+                                    <span>
+                                        Nước: {(formData.waterEnd === '' ? 0 : Number(formData.waterEnd)) - (formData.waterStart === '' ? 0 : Number(formData.waterStart))} số × {formatCurrency(selectedRoom.waterPrice)} = <strong>{formatCurrency(((formData.waterEnd === '' ? 0 : Number(formData.waterEnd)) - (formData.waterStart === '' ? 0 : Number(formData.waterStart))) * selectedRoom.waterPrice)}</strong>
+                                    </span>
                                 </div>
                             </div>
                         )}

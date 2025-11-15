@@ -7,15 +7,23 @@ import {
     Receipt,
     AlertCircle,
     ChevronLeft,
-    ChevronRight
+    ChevronRight,
+    Eye,
+    User,
+    Phone,
+    MapPin,
+    Calendar,
+    Zap,
+    Droplet
 } from 'lucide-react';
 import { houseService } from '../../services/house.service';
 import { roomService } from '../../services/room.service';
 import { paymentService } from '../../services/payment.service';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 import { StatusBadge } from '../../components/common/StatusBadge';
-import { formatCurrency, getCurrentMonth, getCurrentYear, getMonthName } from '../../utils/format';
+import { formatCurrency, getCurrentMonth, getCurrentYear, getMonthName, formatPhoneNumber } from '../../utils/format';
 import { cn } from '../../utils/cn';
+import type { MonthlyPayment, Room } from '../../types';
 
 interface StatCardProps {
     icon: typeof Home;
@@ -47,10 +55,335 @@ function StatCard({ icon: Icon, label, value, variant = 'default' }: StatCardPro
     );
 }
 
+// Modal xem chi tiết hóa đơn
+interface PaymentDetailModalProps {
+    payment: MonthlyPayment;
+    onClose: () => void;
+}
+
+function PaymentDetailModal({ payment, onClose }: PaymentDetailModalProps) {
+    const electUsage = payment.electEnd - payment.electStart;
+    const waterUsage = payment.waterEnd - payment.waterStart;
+    const electCost = electUsage * payment.electPrice;
+    const waterCost = waterUsage * payment.waterPrice;
+
+    return (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                {/* Header */}
+                <div className="sticky top-0 bg-white flex items-center justify-between p-6 border-b border-gray-200 rounded-t-xl">
+                    <div>
+                        <h2 className="text-xl font-semibold text-gray-900">Chi tiết hóa đơn</h2>
+                        <p className="text-sm text-gray-600 mt-1">
+                            Tháng {payment.month}/{payment.year}
+                        </p>
+                    </div>
+                    <button
+                        onClick={onClose}
+                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                    >
+                        <Eye className="w-5 h-5" />
+                    </button>
+                </div>
+
+                {/* Content */}
+                <div className="p-6 space-y-6">
+                    {/* Room Info */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                            <Home className="w-5 h-5 text-primary-600" />
+                            Thông tin phòng
+                        </h3>
+                        <div className="bg-gray-50 rounded-lg p-4 space-y-2">
+                            <div className="flex justify-between">
+                                <span className="text-gray-600">Phòng:</span>
+                                <span className="font-medium">{payment.room?.roomName}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-600">Địa chỉ:</span>
+                                <span className="font-medium text-right">{payment.room?.house?.address}</span>
+                            </div>
+                            <div className="flex justify-between items-start">
+                                <span className="text-gray-600">Người thuê:</span>
+                                <div className="text-right">
+                                    <p className="font-medium flex items-center gap-2 justify-end">
+                                        <User className="w-4 h-4" />
+                                        {payment.room?.renter}
+                                    </p>
+                                    <p className="text-sm text-gray-600 flex items-center gap-2 justify-end mt-1">
+                                        <Phone className="w-4 h-4" />
+                                        {payment.room?.phone && formatPhoneNumber(payment.room.phone)}
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="flex justify-between pt-2 border-t">
+                                <span className="text-gray-600">Trạng thái:</span>
+                                <StatusBadge status={payment.status} />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Usage Details */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                            <Calendar className="w-5 h-5 text-primary-600" />
+                            Chi tiết tiêu thụ
+                        </h3>
+
+                        {/* Electric */}
+                        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                            <div className="flex items-center gap-2 mb-3">
+                                <Zap className="w-5 h-5 text-yellow-600" />
+                                <h4 className="font-medium text-yellow-900">Điện</h4>
+                            </div>
+                            <div className="space-y-2 text-sm">
+                                <div className="flex justify-between">
+                                    <span className="text-yellow-700">Chỉ số đầu:</span>
+                                    <span className="font-medium">{payment.electStart}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="text-yellow-700">Chỉ số cuối:</span>
+                                    <span className="font-medium">{payment.electEnd}</span>
+                                </div>
+                                <div className="flex justify-between pt-2 border-t border-yellow-200">
+                                    <span className="text-yellow-700">Tiêu thụ:</span>
+                                    <span className="font-semibold">{electUsage} số × {formatCurrency(payment.electPrice)}</span>
+                                </div>
+                                <div className="flex justify-between text-base">
+                                    <span className="text-yellow-900 font-medium">Thành tiền:</span>
+                                    <span className="font-bold text-yellow-900">{formatCurrency(electCost)}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Water */}
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                            <div className="flex items-center gap-2 mb-3">
+                                <Droplet className="w-5 h-5 text-blue-600" />
+                                <h4 className="font-medium text-blue-900">Nước</h4>
+                            </div>
+                            <div className="space-y-2 text-sm">
+                                <div className="flex justify-between">
+                                    <span className="text-blue-700">Chỉ số đầu:</span>
+                                    <span className="font-medium">{payment.waterStart}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="text-blue-700">Chỉ số cuối:</span>
+                                    <span className="font-medium">{payment.waterEnd}</span>
+                                </div>
+                                <div className="flex justify-between pt-2 border-t border-blue-200">
+                                    <span className="text-blue-700">Tiêu thụ:</span>
+                                    <span className="font-semibold">{waterUsage} số × {formatCurrency(payment.waterPrice)}</span>
+                                </div>
+                                <div className="flex justify-between text-base">
+                                    <span className="text-blue-900 font-medium">Thành tiền:</span>
+                                    <span className="font-bold text-blue-900">{formatCurrency(waterCost)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Cost Breakdown */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-900">Chi phí khác</h3>
+                        <div className="bg-gray-50 rounded-lg p-4 space-y-2 text-sm">
+                            <div className="flex justify-between">
+                                <span className="text-gray-600">Tiền phòng:</span>
+                                <span className="font-medium">{formatCurrency(payment.roomPrice)}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-600">Phí rác:</span>
+                                <span className="font-medium">{formatCurrency(payment.trashFee)}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-600">Máy giặt:</span>
+                                <span className="font-medium">{formatCurrency(payment.washingMachineFee)}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-600">Thang máy:</span>
+                                <span className="font-medium">{formatCurrency(payment.elevatorFee)}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Total */}
+                    <div className="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-6">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm text-yellow-600 mb-1">Tổng cộng</p>
+                                <p className="text-3xl md:text-4xl font-bold text-yellow-900">
+                                    {formatCurrency(payment.totalAmount)}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Note */}
+                    {payment.note && (
+                        <div className="bg-gray-50 rounded-lg p-4">
+                            <p className="text-sm font-medium text-gray-700 mb-2">Ghi chú:</p>
+                            <p className="text-sm text-gray-600">{payment.note}</p>
+                        </div>
+                    )}
+                </div>
+
+                {/* Actions */}
+                <div className="sticky bottom-0 bg-white flex gap-3 p-6 border-t border-gray-200 rounded-b-xl">
+                    <button onClick={onClose} className="flex-1 btn btn-primary">
+                        Đóng
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// Modal xem chi tiết phòng trống
+interface RoomDetailModalProps {
+    room: Room;
+    onClose: () => void;
+}
+
+function RoomDetailModal({ room, onClose }: RoomDetailModalProps) {
+    return (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                {/* Header */}
+                <div className="sticky top-0 bg-white flex items-center justify-between p-6 border-b border-gray-200 rounded-t-xl">
+                    <div>
+                        <h2 className="text-xl font-semibold text-gray-900">{room.roomName}</h2>
+                        <p className="text-sm text-gray-600 mt-1">{room.house?.address}</p>
+                    </div>
+                    <button
+                        onClick={onClose}
+                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                    >
+                        <Eye className="w-5 h-5" />
+                    </button>
+                </div>
+
+                {/* Content */}
+                <div className="p-6 space-y-6">
+                    {/* Status */}
+                    <div className="flex items-center justify-between">
+                        <span className="text-gray-600">Trạng thái:</span>
+                        <StatusBadge status={room.status} />
+                    </div>
+
+                    {/* Basic Info */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                            <Home className="w-5 h-5 text-primary-600" />
+                            Thông tin cơ bản
+                        </h3>
+                        <div className="bg-gray-50 rounded-lg p-4 space-y-2 text-sm">
+                            <div className="flex justify-between">
+                                <span className="text-gray-600">Diện tích:</span>
+                                <span className="font-medium">{room.area} m²</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-600">Người thuê:</span>
+                                <span className="font-medium">{room.renter}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-600">Số điện thoại:</span>
+                                <span className="font-medium">{formatPhoneNumber(room.phone)}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-600">Tiền cọc:</span>
+                                <span className="font-medium">{formatCurrency(room.deposit)}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Pricing */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-900">Bảng giá</h3>
+                        <div className="grid grid-cols-2 gap-3">
+                            <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
+                                <p className="text-xs text-primary-600 mb-1">Tiền phòng</p>
+                                <p className="text-lg font-bold text-primary-900">
+                                    {formatCurrency(room.roomPrice)}
+                                </p>
+                                <p className="text-xs text-primary-600">/ tháng</p>
+                            </div>
+                            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                                <p className="text-xs text-yellow-600 mb-1">Tiền điện</p>
+                                <p className="text-lg font-bold text-yellow-900">
+                                    {formatCurrency(room.electPrice)}
+                                </p>
+                                <p className="text-xs text-yellow-600">/ số</p>
+                            </div>
+                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                <p className="text-xs text-blue-600 mb-1">Tiền nước</p>
+                                <p className="text-lg font-bold text-blue-900">
+                                    {formatCurrency(room.waterPrice)}
+                                </p>
+                                <p className="text-xs text-blue-600">/ số</p>
+                            </div>
+                            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                                <p className="text-xs text-gray-600 mb-1">Phí rác</p>
+                                <p className="text-lg font-bold text-gray-900">
+                                    {formatCurrency(room.trashFee)}
+                                </p>
+                                <p className="text-xs text-gray-600">/ tháng</p>
+                            </div>
+                            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                                <p className="text-xs text-gray-600 mb-1">Máy giặt</p>
+                                <p className="text-lg font-bold text-gray-900">
+                                    {formatCurrency(room.washingMachineFee)}
+                                </p>
+                                <p className="text-xs text-gray-600">/ tháng</p>
+                            </div>
+                            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                                <p className="text-xs text-gray-600 mb-1">Thang máy</p>
+                                <p className="text-lg font-bold text-gray-900">
+                                    {formatCurrency(room.elevatorFee)}
+                                </p>
+                                <p className="text-xs text-gray-600">/ tháng</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Location */}
+                    <div className="space-y-3">
+                        <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                            <MapPin className="w-5 h-5 text-primary-600" />
+                            Địa chỉ
+                        </h3>
+                        <div className="bg-gray-50 rounded-lg p-4">
+                            <p className="text-sm text-gray-900">{room.house?.address}</p>
+                        </div>
+                    </div>
+
+                    {/* Note */}
+                    {room.note && (
+                        <div className="space-y-3">
+                            <h3 className="font-semibold text-gray-900">Ghi chú</h3>
+                            <div className="bg-gray-50 rounded-lg p-4">
+                                <p className="text-sm text-gray-600">{room.note}</p>
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {/* Actions */}
+                <div className="sticky bottom-0 bg-white flex gap-3 p-6 border-t border-gray-200 rounded-b-xl">
+                    <button onClick={onClose} className="flex-1 btn btn-primary">
+                        Đóng
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export function DashboardPage() {
     const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth());
     const [selectedYear, setSelectedYear] = useState(getCurrentYear());
     const [availableRoomsPage, setAvailableRoomsPage] = useState(1);
+    const [selectedPayment, setSelectedPayment] = useState<MonthlyPayment | null>(null);
+    const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
     const ROOMS_PER_PAGE = 6;
 
     const { data: houses, isLoading: housesLoading } = useQuery({
@@ -216,7 +549,8 @@ export function DashboardPage() {
                         {unpaidPayments.slice(0, 5).map((payment) => (
                             <div
                                 key={payment.id}
-                                className="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-yellow-50 rounded-lg gap-2"
+                                className="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-yellow-50 rounded-lg gap-2 hover:shadow-md transition-shadow cursor-pointer"
+                                onClick={() => setSelectedPayment(payment)}
                             >
                                 <div className="flex-1">
                                     <p className="font-medium text-gray-900">{payment.room?.roomName}</p>
@@ -224,10 +558,19 @@ export function DashboardPage() {
                                         Tháng {payment.month}/{payment.year}
                                     </p>
                                 </div>
-                                <div className="text-right">
+                                <div className="flex items-center gap-2">
                                     <p className="font-semibold text-yellow-600">
                                         {formatCurrency(payment.totalAmount)}
                                     </p>
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setSelectedPayment(payment);
+                                        }}
+                                        className="p-2 hover:bg-yellow-100 rounded-lg transition-colors"
+                                    >
+                                        <Eye className="w-4 h-4 text-yellow-700" />
+                                    </button>
                                 </div>
                             </div>
                         ))}
@@ -269,14 +612,26 @@ export function DashboardPage() {
                         {paginatedAvailableRooms.map((room) => (
                             <div
                                 key={room.id}
-                                className="p-4 bg-blue-50 border border-blue-200 rounded-lg hover:shadow-md transition-shadow"
+                                className="p-4 bg-blue-50 border border-blue-200 rounded-lg hover:shadow-md transition-shadow cursor-pointer"
+                                onClick={() => setSelectedRoom(room)}
                             >
                                 <div className="flex items-start justify-between mb-3">
                                     <div className="flex-1">
                                         <h4 className="font-semibold text-gray-900">{room.roomName}</h4>
                                         <p className="text-xs text-gray-600 mt-1">{room.house?.address}</p>
                                     </div>
-                                    <StatusBadge status={room.status} />
+                                    <div className="flex items-center gap-2">
+                                        <StatusBadge status={room.status} />
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setSelectedRoom(room);
+                                            }}
+                                            className="p-1.5 hover:bg-blue-100 rounded-lg transition-colors"
+                                        >
+                                            <Eye className="w-4 h-4 text-blue-700" />
+                                        </button>
+                                    </div>
                                 </div>
                                 <div className="space-y-2 text-sm">
                                     <div className="flex justify-between">
@@ -294,6 +649,21 @@ export function DashboardPage() {
                         ))}
                     </div>
                 </div>
+            )}
+
+            {/* Modals */}
+            {selectedPayment && (
+                <PaymentDetailModal
+                    payment={selectedPayment}
+                    onClose={() => setSelectedPayment(null)}
+                />
+            )}
+
+            {selectedRoom && (
+                <RoomDetailModal
+                    room={selectedRoom}
+                    onClose={() => setSelectedRoom(null)}
+                />
             )}
         </div>
     );

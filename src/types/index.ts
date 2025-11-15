@@ -36,6 +36,7 @@ export interface Room {
     electPrice: number;
     waterPrice: number;
     trashFee: number;
+    parkingFee: number;
     washingMachineFee: number;
     elevatorFee: number;
     rentedAt: string;
@@ -68,6 +69,7 @@ export interface MonthlyPayment {
     electPrice: number;
     waterPrice: number;
     trashFee: number;
+    parkingFee: number;
     washingMachineFee: number;
     elevatorFee: number;
     totalAmount: number;

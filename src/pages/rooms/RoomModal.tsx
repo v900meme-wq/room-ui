@@ -23,16 +23,17 @@ export function RoomModal({
         roomName: '',
         renter: '',
         phone: '',
-        area: 0,
+        area: '' as string | number,
         status: 'available',
-        roomPrice: 0,
-        electPrice: 0,
-        waterPrice: 0,
-        trashFee: 0,
-        washingMachineFee: 0,
-        elevatorFee: 0,
+        roomPrice: '' as string | number,
+        electPrice: '' as string | number,
+        waterPrice: '' as string | number,
+        trashFee: '' as string | number,
+        parkingFee: '' as string | number,
+        washingMachineFee: '' as string | number,
+        elevatorFee: '' as string | number,
         rentedAt: new Date().toISOString().split('T')[0],
-        deposit: 0,
+        deposit: '' as string | number,
         note: '',
         houseId: defaultHouseId || 0,
     });
@@ -49,6 +50,7 @@ export function RoomModal({
                 electPrice: room.electPrice,
                 waterPrice: room.waterPrice,
                 trashFee: room.trashFee,
+                parkingFee: room.parkingFee,
                 washingMachineFee: room.washingMachineFee,
                 elevatorFee: room.elevatorFee,
                 rentedAt: room.rentedAt.split('T')[0],
@@ -66,10 +68,36 @@ export function RoomModal({
             return;
         }
 
+        // Convert empty strings to 0
         onSubmit({
             ...formData,
+            area: formData.area === '' ? 0 : Number(formData.area),
+            roomPrice: formData.roomPrice === '' ? 0 : Number(formData.roomPrice),
+            electPrice: formData.electPrice === '' ? 0 : Number(formData.electPrice),
+            waterPrice: formData.waterPrice === '' ? 0 : Number(formData.waterPrice),
+            trashFee: formData.trashFee === '' ? 0 : Number(formData.trashFee),
+            parkingFee: formData.parkingFee === '' ? 0 : Number(formData.parkingFee),
+            washingMachineFee: formData.washingMachineFee === '' ? 0 : Number(formData.washingMachineFee),
+            elevatorFee: formData.elevatorFee === '' ? 0 : Number(formData.elevatorFee),
+            deposit: formData.deposit === '' ? 0 : Number(formData.deposit),
             rentedAt: new Date(formData.rentedAt).toISOString(),
         });
+    };
+
+    const handleNumberChange = (field: string, value: string) => {
+        // Remove all dots for parsing
+        const cleanValue = value.replace(/\./g, '');
+
+        // Allow empty string or valid number
+        if (cleanValue === '' || !isNaN(Number(cleanValue))) {
+            setFormData({ ...formData, [field]: cleanValue });
+        }
+    };
+
+    const formatNumber = (value: string | number): string => {
+        if (value === '' || value === 0) return '';
+        const num = typeof value === 'string' ? value : value.toString();
+        return num.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     };
 
     return (
@@ -177,12 +205,11 @@ export function RoomModal({
                                     Diện tích (m²)
                                 </label>
                                 <input
-                                    type="number"
-                                    value={formData.area}
-                                    onChange={(e) => setFormData({ ...formData, area: Number(e.target.value) })}
+                                    type="text"
+                                    value={formatNumber(formData.area)}
+                                    onChange={(e) => handleNumberChange('area', e.target.value)}
                                     className="input w-full"
-                                    min="0"
-                                    step="0.1"
+                                    placeholder="0"
                                 />
                             </div>
 
@@ -210,11 +237,11 @@ export function RoomModal({
                                     Giá phòng (VNĐ) <span className="text-red-500">*</span>
                                 </label>
                                 <input
-                                    type="number"
-                                    value={formData.roomPrice}
-                                    onChange={(e) => setFormData({ ...formData, roomPrice: Number(e.target.value) })}
+                                    type="text"
+                                    value={formatNumber(formData.roomPrice)}
+                                    onChange={(e) => handleNumberChange('roomPrice', e.target.value)}
                                     className="input w-full"
-                                    min="0"
+                                    placeholder="0"
                                     required
                                 />
                             </div>
@@ -224,11 +251,11 @@ export function RoomModal({
                                     Tiền cọc (VNĐ)
                                 </label>
                                 <input
-                                    type="number"
-                                    value={formData.deposit}
-                                    onChange={(e) => setFormData({ ...formData, deposit: Number(e.target.value) })}
+                                    type="text"
+                                    value={formatNumber(formData.deposit)}
+                                    onChange={(e) => handleNumberChange('deposit', e.target.value)}
                                     className="input w-full"
-                                    min="0"
+                                    placeholder="0"
                                 />
                             </div>
 
@@ -237,11 +264,11 @@ export function RoomModal({
                                     Điện (VNĐ/số)
                                 </label>
                                 <input
-                                    type="number"
-                                    value={formData.electPrice}
-                                    onChange={(e) => setFormData({ ...formData, electPrice: Number(e.target.value) })}
+                                    type="text"
+                                    value={formatNumber(formData.electPrice)}
+                                    onChange={(e) => handleNumberChange('electPrice', e.target.value)}
                                     className="input w-full"
-                                    min="0"
+                                    placeholder="0"
                                 />
                             </div>
 
@@ -250,11 +277,11 @@ export function RoomModal({
                                     Nước (VNĐ/số)
                                 </label>
                                 <input
-                                    type="number"
-                                    value={formData.waterPrice}
-                                    onChange={(e) => setFormData({ ...formData, waterPrice: Number(e.target.value) })}
+                                    type="text"
+                                    value={formatNumber(formData.waterPrice)}
+                                    onChange={(e) => handleNumberChange('waterPrice', e.target.value)}
                                     className="input w-full"
-                                    min="0"
+                                    placeholder="0"
                                 />
                             </div>
 
@@ -263,11 +290,24 @@ export function RoomModal({
                                     Phí rác (VNĐ)
                                 </label>
                                 <input
-                                    type="number"
-                                    value={formData.trashFee}
-                                    onChange={(e) => setFormData({ ...formData, trashFee: Number(e.target.value) })}
+                                    type="text"
+                                    value={formatNumber(formData.trashFee)}
+                                    onChange={(e) => handleNumberChange('trashFee', e.target.value)}
                                     className="input w-full"
-                                    min="0"
+                                    placeholder="0"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Gửi xe (VNĐ)
+                                </label>
+                                <input
+                                    type="text"
+                                    value={formatNumber(formData.parkingFee)}
+                                    onChange={(e) => handleNumberChange('parkingFee', e.target.value)}
+                                    className="input w-full"
+                                    placeholder="0"
                                 />
                             </div>
 
@@ -276,24 +316,25 @@ export function RoomModal({
                                     Máy giặt (VNĐ)
                                 </label>
                                 <input
-                                    type="number"
-                                    value={formData.washingMachineFee}
-                                    onChange={(e) => setFormData({ ...formData, washingMachineFee: Number(e.target.value) })}
+                                    type="text"
+                                    value={formatNumber(formData.washingMachineFee)}
+                                    onChange={(e) => handleNumberChange('washingMachineFee', e.target.value)}
                                     className="input w-full"
-                                    min="0"
+                                    placeholder="0"
                                 />
                             </div>
 
-                            <div className="sm:col-span-2">
+                            {/* <div className="sm:col-span-2"> */}
+                            <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Thang máy (VNĐ)
                                 </label>
                                 <input
-                                    type="number"
-                                    value={formData.elevatorFee}
-                                    onChange={(e) => setFormData({ ...formData, elevatorFee: Number(e.target.value) })}
+                                    type="text"
+                                    value={formatNumber(formData.elevatorFee)}
+                                    onChange={(e) => handleNumberChange('elevatorFee', e.target.value)}
                                     className="input w-full"
-                                    min="0"
+                                    placeholder="0"
                                 />
                             </div>
                         </div>
