@@ -1,7 +1,7 @@
 import { useLocation } from 'react-router-dom';
 
 const pageTitles: Record<string, string> = {
-    '/dashboard': 'Dashboard',
+    '/dashboard': 'Trang chủ',
     '/houses': 'Nhà trọ',
     '/rooms': 'Phòng trọ',
     '/payments': 'Hóa đơn',

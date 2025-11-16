@@ -450,12 +450,12 @@ export function DashboardPage() {
         <div className="space-y-6">
             {/* Header */}
             <div>
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Dashboard</h1>
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Trang chủ</h1>
                 <p className="text-gray-600 mt-1">Tổng quan quản lý của bạn</p>
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                 <StatCard
                     icon={Building2}
                     label="Nhà trọ"

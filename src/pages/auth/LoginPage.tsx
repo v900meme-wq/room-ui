@@ -41,7 +41,7 @@ export function LoginPage() {
                 <div className="bg-white rounded-2xl shadow-xl p-8">
                     {/* Logo */}
                     <div className="text-center mb-8">
-                        <h1 className="text-3xl font-bold text-primary-600 mb-2">Room Mng</h1>
+                        <h1 className="text-3xl font-bold text-primary-600 mb-2">V Room</h1>
                         <p className="text-gray-600">Đăng nhập vào hệ thống</p>
                     </div>
 

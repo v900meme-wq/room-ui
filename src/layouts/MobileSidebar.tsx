@@ -48,7 +48,7 @@ export function MobileSidebar() {
             >
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b">
-                    <h1 className="text-xl font-bold text-primary-600">Room Mng</h1>
+                    <h1 className="text-xl font-bold text-primary-600">V Room</h1>
                     <button
                         onClick={() => setIsOpen(false)}
                         className="p-2 hover:bg-gray-100 rounded-lg"
