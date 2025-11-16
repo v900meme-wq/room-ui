@@ -94,14 +94,6 @@ export interface LoginRequest {
     password: string;
 }
 
-export interface RegisterRequest {
-    username: string;
-    password: string;
-    phone: string;
-    roomLimit?: number;
-    isAdmin?: boolean;
-}
-
 export interface AuthResponse {
     accessToken: string;
     user: User;

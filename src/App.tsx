@@ -8,7 +8,6 @@ import { DashboardLayout } from './layouts/DashboardLayout';
 
 // Pages
 import { LoginPage } from './pages/auth/LoginPage';
-import { RegisterPage } from './pages/auth/RegisterPage';
 import { DashboardPage } from './pages/dashboard/DashboardPage';
 import { HousesPage } from './pages/houses/HousesPage';
 import { RoomsPage } from './pages/rooms/RoomsPage';
@@ -45,10 +44,6 @@ function App() {
           <Route
             path="/login"
             element={isAuthenticated ? <Navigate to="/dashboard" /> : <LoginPage />}
-          />
-          <Route
-            path="/register"
-            element={isAuthenticated ? <Navigate to="/dashboard" /> : <RegisterPage />}
           />
 
           {/* Protected Routes */}

@@ -92,14 +92,6 @@ export function LoginPage() {
                             )}
                         </button>
                     </form>
-
-                    {/* Register Link */}
-                    <p className="text-center text-sm text-gray-600 mt-6">
-                        Chưa có tài khoản?{' '}
-                        <Link to="/register" className="text-primary-600 font-medium hover:underline">
-                            Đăng ký ngay
-                        </Link>
-                    </p>
                 </div>
             </div>
         </div>
