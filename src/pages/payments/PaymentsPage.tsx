@@ -76,6 +76,7 @@ export function PaymentsPage() {
         mutationFn: (id: number) => paymentService.delete(id),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['payments'] });
+            queryClient.invalidateQueries({ queryKey: ['recent-payments'] }); // ← Invalidate recent data
             queryClient.invalidateQueries({ queryKey: ['admin-dashboard'] });
             toast.success('Xóa thành công!');
             setDeletingId(null);

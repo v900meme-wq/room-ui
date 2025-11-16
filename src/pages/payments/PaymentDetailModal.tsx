@@ -128,7 +128,7 @@ export function PaymentDetailModal({ payment, onClose, onEdit }: PaymentDetailMo
                                 <span className="text-gray-600">M.giặt:</span>
                                 <span className="font-medium">{formatCurrency(payment.washingMachineFee)}</span>
                             </div>
-                            <div className="flex justify-between col-span-2">
+                            <div className="flex justify-between">
                                 <span className="text-gray-600">Thang máy:</span>
                                 <span className="font-medium">{formatCurrency(payment.elevatorFee)}</span>
                             </div>
