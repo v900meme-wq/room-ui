@@ -1,4 +1,4 @@
-import { X, Home, MapPin, User, Phone, Edit } from 'lucide-react';
+import { Eye, Home, MapPin, User, Phone, Edit } from 'lucide-react';
 import type { Room } from '../../types';
 import { formatCurrency, formatPhoneNumber } from '../../utils/format';
 import { StatusBadge } from '../../components/common/StatusBadge';
@@ -23,7 +23,7 @@ export function RoomDetailModal({ room, onClose, onEdit }: RoomDetailModalProps)
                         onClick={onClose}
                         className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                     >
-                        <X className="w-5 h-5" />
+                        <Eye className="w-5 h-5" />
                     </button>
                 </div>
 
