@@ -9,8 +9,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'brick.png', 'mask-icon.svg'],
       manifest: {
-        name: 'Room Management',
-        short_name: 'RoomMng',
+        name: 'Vanw Room',
+        short_name: 'V Room',
         description: 'Quản lý nhà trọ và hóa đơn',
         theme_color: '#0ea5e9',
         background_color: '#ffffff',
