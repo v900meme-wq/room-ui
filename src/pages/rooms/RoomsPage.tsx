@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, DoorOpen, Edit, Trash2, Filter, User, Phone } from 'lucide-react';
+import { Plus, DoorOpen, Edit, Trash2, Filter, User, Phone, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 import type { Room } from '../../types';
 import { roomService } from '../../services/room.service';
@@ -9,6 +9,7 @@ import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 import { EmptyState } from '../../components/common/EmptyState';
 import { StatusBadge } from '../../components/common/StatusBadge';
 import { RoomModal } from './RoomModal';
+import { RoomDetailModal } from './RoomDetailModal';
 import { useOnlineStatus } from '../../hooks/useOnlineStatus';
 import { formatCurrency, formatPhoneNumber } from '../../utils/format';
 
@@ -17,6 +18,7 @@ export function RoomsPage() {
     const [editingRoom, setEditingRoom] = useState<Room | null>(null);
     const [deletingId, setDeletingId] = useState<number | null>(null);
     const [selectedHouseId, setSelectedHouseId] = useState<number | undefined>();
+    const [viewingRoom, setViewingRoom] = useState<Room | null>(null);
 
     const isOnline = useOnlineStatus();
     const queryClient = useQueryClient();
@@ -81,6 +83,10 @@ export function RoomsPage() {
             id: editingRoom?.id,
             values,
         });
+    };
+
+    const handleView = (room: Room) => {
+        setViewingRoom(room);
     };
 
     // Auto-select first house if only one
@@ -238,6 +244,13 @@ export function RoomsPage() {
                             {/* Actions */}
                             <div className="flex gap-2">
                                 <button
+                                    onClick={() => handleView(room)}
+                                    className="flex-1 btn btn-secondary text-sm"
+                                >
+                                    <Eye className="w-4 h-4" />
+                                    Xem
+                                </button>
+                                <button
                                     onClick={() => handleEdit(room)}
                                     disabled={!isOnline}
                                     className="flex-1 btn btn-secondary text-sm"
@@ -277,6 +290,19 @@ export function RoomsPage() {
                     }}
                     onSubmit={handleSubmit}
                     isLoading={saveMutation.isPending}
+                />
+            )}
+
+            {/* Detail Modal */}
+            {viewingRoom && (
+                <RoomDetailModal
+                    room={viewingRoom}
+                    onClose={() => setViewingRoom(null)}
+                    onEdit={() => {
+                        setEditingRoom(viewingRoom);
+                        setViewingRoom(null);
+                        setIsModalOpen(true);
+                    }}
                 />
             )}
         </div>

@@ -16,11 +16,11 @@ export function PaymentDetailModal({ payment, onClose, onEdit }: PaymentDetailMo
     const waterCost = waterUsage * payment.waterPrice;
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-start justify-center p-4 z-50 overflow-y-auto">
-            <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full my-8">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                 {/* Header - Sticky */}
                 <div className="sticky top-0 bg-white flex items-center justify-between p-6 border-b border-gray-200 rounded-t-xl z-10">
-                    <div className="flex-1">
+                    <div>
                         <h2 className="text-xl font-semibold text-gray-900">Chi tiết hóa đơn</h2>
                         <p className="text-sm text-gray-600 mt-1">
                             Tháng {payment.month}/{payment.year}
@@ -35,7 +35,7 @@ export function PaymentDetailModal({ payment, onClose, onEdit }: PaymentDetailMo
                 </div>
 
                 {/* Content - Scrollable */}
-                <div className="p-6 space-y-6 max-h-[calc(100vh-240px)] overflow-y-auto">
+                <div className="p-6 space-y-6">
                     {/* Room Info */}
                     <div className="space-y-3">
                         <h3 className="font-semibold text-gray-900 flex items-center gap-2">
@@ -194,7 +194,7 @@ export function PaymentDetailModal({ payment, onClose, onEdit }: PaymentDetailMo
                     )}
                 </div>
 
-                {/* Actions - Sticky */}
+                {/* Actions - Sticky Bottom */}
                 <div className="sticky bottom-0 bg-white flex gap-3 p-6 border-t border-gray-200 rounded-b-xl">
                     <button onClick={onClose} className="flex-1 btn btn-secondary">
                         Đóng
