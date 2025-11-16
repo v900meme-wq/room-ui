@@ -485,7 +485,8 @@ export function DashboardPage() {
             {/* Revenue */}
             <div className="card">
                 <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold">Doanh thu tháng {selectedMonth}/{selectedYear}</h3>
+                    {/* <h3 className="text-lg font-semibold">Doanh thu tháng {selectedMonth}/{selectedYear}</h3> */}
+                    <h3 className="text-lg font-semibold">Doanh thu tháng</h3>
                     <div className="flex items-center gap-2">
                         <button
                             onClick={handlePrevMonth}

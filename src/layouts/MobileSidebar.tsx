@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import { Menu, X, Home, LogOut } from 'lucide-react';
+// import { NavLink } from 'react-router-dom';
+import { Menu, X, LogOut } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { cn } from '../utils/cn';
 
@@ -9,12 +9,12 @@ export function MobileSidebar() {
     const user = useAuthStore((state) => state.user);
     const clearAuth = useAuthStore((state) => state.clearAuth);
 
-    const navItems = [
-        { to: '/dashboard', icon: Home, label: 'Trang chủ' },
-        // { to: '/houses', icon: Building2, label: 'Nhà trọ' },
-        // { to: '/rooms', icon: DoorOpen, label: 'Phòng trọ' },
-        // { to: '/payments', icon: Receipt, label: 'Hóa đơn' },
-    ];
+    // const navItems = [
+    //     // { to: '/dashboard', icon: Home, label: 'Trang chủ' },
+    //     // { to: '/houses', icon: Building2, label: 'Nhà trọ' },
+    //     // { to: '/rooms', icon: DoorOpen, label: 'Phòng trọ' },
+    //     // { to: '/payments', icon: Receipt, label: 'Hóa đơn' },
+    // ];
 
     const handleLogout = () => {
         clearAuth();
@@ -73,7 +73,7 @@ export function MobileSidebar() {
                 </div>
 
                 {/* Navigation */}
-                <nav className="flex-1 p-4 space-y-1">
+                {/* <nav className="flex-1 p-4 space-y-1">
                     {navItems.map((item) => (
                         <NavLink
                             key={item.to}
@@ -92,7 +92,7 @@ export function MobileSidebar() {
                             {item.label}
                         </NavLink>
                     ))}
-                </nav>
+                </nav> */}
 
                 {/* Logout */}
                 <div className="p-4 border-t">
