@@ -404,7 +404,13 @@ export function DashboardPage() {
         }),
     });
 
-    const isLoading = housesLoading || roomsLoading || paymentsLoading;
+    const { data: allPayments, isLoading: allPaymentsLoading } = useQuery({
+        queryKey: ['payments'],
+        queryFn: () => paymentService.getAll({
+        }),
+    });
+
+    const isLoading = housesLoading || roomsLoading || paymentsLoading || allPaymentsLoading;
 
     if (isLoading) {
         return <LoadingSpinner />;
@@ -415,6 +421,7 @@ export function DashboardPage() {
     // const occupiedRooms = rooms?.filter((r) => r.status === 'rented').length || 0;
     const availableRooms = rooms?.filter((r) => r.status === 'available') || [];
     const unpaidPayments = payments?.filter((p) => p.status === 'unpaid') || [];
+    const allUnpaidPayments = allPayments?.filter((p) => p.status === 'unpaid') || [];
 
     const totalRevenue = payments?.reduce((sum, p) => sum + p.totalAmount, 0) || 0;
     const paidRevenue = payments
@@ -477,7 +484,7 @@ export function DashboardPage() {
                 <StatCard
                     icon={Receipt}
                     label="Chưa thu"
-                    value={unpaidPayments.length}
+                    value={allUnpaidPayments.length}
                     variant="warning"
                 />
             </div>
