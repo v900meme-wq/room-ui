@@ -141,7 +141,7 @@ export function PaymentsPage() {
 
             {/* Filters */}
             <div className="card">
-                <div className="grid grid-cols-3 lg:grid-cols-5 gap-4">
+                <div className="grid grid-cols-3 lg:grid-cols-5 gap-1 sm:gap-4">
                     {/* House Filter */}
                     <div>
                         <label className="block text-xs font-medium text-gray-700 mb-2">
