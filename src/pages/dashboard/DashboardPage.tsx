@@ -412,7 +412,7 @@ export function DashboardPage() {
 
     const totalHouses = houses?.length || 0;
     const totalRooms = rooms?.length || 0;
-    const occupiedRooms = rooms?.filter((r) => r.status === 'rented').length || 0;
+    // const occupiedRooms = rooms?.filter((r) => r.status === 'rented').length || 0;
     const availableRooms = rooms?.filter((r) => r.status === 'available') || [];
     const unpaidPayments = payments?.filter((p) => p.status === 'unpaid') || [];
 
@@ -455,7 +455,7 @@ export function DashboardPage() {
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-1 md:gap-6">
                 <StatCard
                     icon={Building2}
                     label="Nhà trọ"
@@ -463,20 +463,20 @@ export function DashboardPage() {
                     variant="primary"
                 />
                 <StatCard
-                    icon={DoorOpen}
+                    icon={Home}
                     label="Tổng phòng"
                     value={totalRooms}
                     variant="default"
                 />
                 <StatCard
-                    icon={Home}
-                    label="Đang thuê"
-                    value={occupiedRooms}
+                    icon={DoorOpen}
+                    label="Chưa thuê"
+                    value={availableRooms.length}
                     variant="success"
                 />
                 <StatCard
                     icon={Receipt}
-                    label="Chưa thanh toán"
+                    label="Chưa thu"
                     value={unpaidPayments.length}
                     variant="warning"
                 />
