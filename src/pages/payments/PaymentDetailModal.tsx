@@ -1,4 +1,4 @@
-import { X, Edit, User, Phone, Home, Zap, Droplet } from 'lucide-react';
+import { X, Edit, User, Phone, Zap, Droplet } from 'lucide-react';
 import type { MonthlyPayment } from '../../types';
 import { formatCurrency, formatPhoneNumber, formatDateTime } from '../../utils/format';
 import { StatusBadge } from '../../components/common/StatusBadge';
