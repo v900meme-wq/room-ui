@@ -260,13 +260,13 @@ export function PaymentsPage() {
                     {/* Summary */}
                     <div className="grid grid-cols-3 gap-1 sm:gap-4">
                         <div className="card bg-primary-50 border-primary-200">
-                            <p className="text-sm text-primary-600 mb-1">Tổng doanh thu</p>
+                            <p className="text-xs text-primary-600 mb-1">Tổng doanh thu</p>
                             <p className="text-xs sm:text-2xl font-bold text-primary-900">
                                 {formatCurrency(payments.reduce((sum, p) => sum + p.totalAmount, 0))}
                             </p>
                         </div>
                         <div className="card bg-green-50 border-green-200">
-                            <p className="text-sm text-green-600 mb-1">Đã thanh toán</p>
+                            <p className="text-xs text-green-600 mb-1">Đã thanh toán</p>
                             <p className="text-xs sm:text-2xl font-bold text-green-900">
                                 {formatCurrency(
                                     payments.filter(p => p.status === 'paid').reduce((sum, p) => sum + p.totalAmount, 0)
@@ -274,7 +274,7 @@ export function PaymentsPage() {
                             </p>
                         </div>
                         <div className="card bg-yellow-50 border-yellow-200">
-                            <p className="text-sm text-yellow-600 mb-1">Chưa thanh toán</p>
+                            <p className="text-xs text-yellow-600 mb-1">Chưa thanh toán</p>
                             <p className="text-xs sm:text-2xl font-bold text-yellow-900">
                                 {formatCurrency(
                                     payments.filter(p => p.status === 'unpaid').reduce((sum, p) => sum + p.totalAmount, 0)
