@@ -81,7 +81,6 @@ export function PaymentModal({ payment, onClose, onSubmit, isLoading }: PaymentM
     }, [recentData, payment]);
 
     const handleNumberChange = (field: string, value: string) => {
-        // Allow empty string or valid number
         if (value === '' || !isNaN(Number(value))) {
             setFormData({ ...formData, [field]: value });
         }
@@ -143,11 +142,11 @@ export function PaymentModal({ payment, onClose, onSubmit, isLoading }: PaymentM
     };
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 overflow-y-auto">
-            <div className="bg-white rounded-xl shadow-xl max-w-3xl w-full my-8">
-                {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                    <h2 className="text-xl font-semibold text-gray-900">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-xl shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col">
+                {/* Header - Sticky */}
+                <div className="flex items-center justify-between p-4 md:p-6 border-b border-gray-200 flex-shrink-0">
+                    <h2 className="text-lg md:text-xl font-semibold text-gray-900">
                         {payment ? 'Sửa hóa đơn' : 'Tạo hóa đơn mới'}
                     </h2>
                     <button
@@ -158,8 +157,8 @@ export function PaymentModal({ payment, onClose, onSubmit, isLoading }: PaymentM
                     </button>
                 </div>
 
-                {/* Form */}
-                <form onSubmit={handleSubmit} className="p-6 space-y-6">
+                {/* Form - Scrollable */}
+                <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
                     {/* Room Selection */}
                     <div className="space-y-4">
                         <h3 className="font-semibold text-gray-900">Chọn phòng</h3>
@@ -415,26 +414,27 @@ export function PaymentModal({ payment, onClose, onSubmit, isLoading }: PaymentM
                             </div>
                         </div>
                     )}
-
-                    {/* Actions */}
-                    <div className="flex gap-3 pt-4 border-t">
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="flex-1 btn btn-secondary"
-                            disabled={isLoading}
-                        >
-                            Hủy
-                        </button>
-                        <button
-                            type="submit"
-                            className="flex-1 btn btn-primary"
-                            disabled={isLoading || !formData.roomId}
-                        >
-                            {isLoading ? 'Đang lưu...' : payment ? 'Cập nhật' : 'Tạo hóa đơn'}
-                        </button>
-                    </div>
                 </form>
+
+                {/* Actions - Sticky Bottom */}
+                <div className="flex gap-3 p-4 md:p-6 border-t border-gray-200 flex-shrink-0">
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="flex-1 btn btn-secondary"
+                        disabled={isLoading}
+                    >
+                        Hủy
+                    </button>
+                    <button
+                        type="submit"
+                        onClick={handleSubmit}
+                        className="flex-1 btn btn-primary"
+                        disabled={isLoading || !formData.roomId}
+                    >
+                        {isLoading ? 'Đang lưu...' : payment ? 'Cập nhật' : 'Tạo hóa đơn'}
+                    </button>
+                </div>
             </div>
         </div>
     );

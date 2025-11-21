@@ -85,10 +85,7 @@ export function RoomModal({
     };
 
     const handleNumberChange = (field: string, value: string) => {
-        // Remove all dots for parsing
         const cleanValue = value.replace(/\./g, '');
-
-        // Allow empty string or valid number
         if (cleanValue === '' || !isNaN(Number(cleanValue))) {
             setFormData({ ...formData, [field]: cleanValue });
         }
@@ -101,10 +98,10 @@ export function RoomModal({
     };
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-start justify-center p-4 z-50 overflow-y-auto">
-            <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full my-8">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
                 {/* Header - Sticky */}
-                <div className="flex items-center justify-between p-4 md:p-6 border-b border-gray-200 sticky top-0 bg-white rounded-t-xl z-10">
+                <div className="flex items-center justify-between p-4 md:p-6 border-b border-gray-200 flex-shrink-0">
                     <h2 className="text-lg md:text-xl font-semibold text-gray-900">
                         {room ? 'Sửa phòng trọ' : 'Thêm phòng trọ'}
                     </h2>
@@ -117,7 +114,7 @@ export function RoomModal({
                 </div>
 
                 {/* Form - Scrollable */}
-                <form onSubmit={handleSubmit} className="p-4 md:p-6 space-y-6 max-h-[calc(100vh-200px)] overflow-y-auto">
+                <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
                     {/* Basic Info */}
                     <div className="space-y-4">
                         <h3 className="font-semibold text-gray-900">Thông tin cơ bản</h3>
@@ -324,7 +321,6 @@ export function RoomModal({
                                 />
                             </div>
 
-                            {/* <div className="sm:col-span-2"> */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Thang máy (VNĐ)
@@ -356,7 +352,7 @@ export function RoomModal({
                 </form>
 
                 {/* Actions - Sticky Bottom */}
-                <div className="flex gap-3 p-4 md:p-6 border-t sticky bottom-0 bg-white rounded-b-xl">
+                <div className="flex gap-3 p-4 md:p-6 border-t border-gray-200 flex-shrink-0">
                     <button
                         type="button"
                         onClick={onClose}
