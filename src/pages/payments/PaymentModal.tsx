@@ -240,8 +240,8 @@ export function PaymentModal({ payment, onClose, onSubmit, isLoading }: PaymentM
                                         {recentData.recentPayments.map((p) => (
                                             <div key={p.id} className="flex justify-between text-xs text-blue-700">
                                                 <span>Tháng {p.month}/{p.year}</span>
+                                                <span>Điện: {p.electStart}→{p.electEnd} <br /> Nước: {p.waterStart}→{p.waterEnd}</span>
                                                 <span className="font-medium">{formatCurrency(p.totalAmount)}</span>
-                                                <span>Điện: {p.electStart}→{p.electEnd} | Nước: {p.waterStart}→{p.waterEnd}</span>
                                             </div>
                                         ))}
                                     </div>
