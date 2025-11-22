@@ -16,7 +16,7 @@ export function PaymentDetailModal({ payment, onClose, onEdit }: PaymentDetailMo
     const waterCost = waterUsage * payment.waterPrice;
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+        <div className="fixed -top-10 inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-xl shadow-xl w-full max-w-lg md:max-w-4xl max-h-[95vh] md:max-h-[90vh] flex flex-col">
                 {/* Header - Sticky */}
                 <div className="flex items-center justify-between p-4 md:p-6 border-b border-gray-200 flex-shrink-0">

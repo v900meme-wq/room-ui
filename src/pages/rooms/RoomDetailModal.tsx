@@ -11,7 +11,7 @@ interface RoomDetailModalProps {
 
 export function RoomDetailModal({ room, onClose, onEdit }: RoomDetailModalProps) {
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+        <div className="fixed -top-10 inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                 {/* Header - Sticky */}
                 <div className="sticky top-0 bg-white flex items-center justify-between p-6 border-b border-gray-200 rounded-t-xl z-10">
