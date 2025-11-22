@@ -58,6 +58,9 @@ export function LoginPage() {
                                 className="input w-full"
                                 placeholder="Nhập tên đăng nhập"
                                 autoFocus
+                                autoCapitalize="none"
+                                autoCorrect="off"
+                                autoComplete="username"
                             />
                         </div>
 
