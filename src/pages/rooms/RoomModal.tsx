@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { X, Sparkles } from 'lucide-react';
 import type { Room, House } from '../../types';
+import { priceService } from '../../services/price.service';
 
 interface RoomModalProps {
     room: Room | null;
@@ -38,6 +40,12 @@ export function RoomModal({
         houseId: defaultHouseId || 0,
     });
 
+    // Fetch price templates
+    const { data: priceTemplates } = useQuery({
+        queryKey: ['prices'],
+        queryFn: () => priceService.getAll(),
+    });
+
     useEffect(() => {
         if (room) {
             setFormData({
@@ -60,6 +68,25 @@ export function RoomModal({
             });
         }
     }, [room]);
+
+    // Handle price template selection
+    const handlePriceTemplateChange = (priceId: string) => {
+        if (!priceId) return;
+
+        const selectedPrice = priceTemplates?.find(p => p.id === Number(priceId));
+        if (selectedPrice) {
+            setFormData(prev => ({
+                ...prev,
+                roomPrice: selectedPrice.roomPrice,
+                electPrice: selectedPrice.electPrice,
+                waterPrice: selectedPrice.waterPrice,
+                trashFee: selectedPrice.trashFee,
+                washingMachineFee: selectedPrice.washingMachineFee,
+                elevatorFee: selectedPrice.elevatorFee,
+                deposit: selectedPrice.deposit,
+            }));
+        }
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -223,6 +250,31 @@ export function RoomModal({
                             </div>
                         </div>
                     </div>
+
+                    {/* Price Template Selection */}
+                    {priceTemplates && priceTemplates.length > 0 && (
+                        <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
+                            <div className="flex items-center gap-2 mb-3">
+                                <Sparkles className="w-5 h-5 text-primary-600" />
+                                <h3 className="font-semibold text-primary-900">Chọn mẫu giá</h3>
+                            </div>
+                            <select
+                                onChange={(e) => handlePriceTemplateChange(e.target.value)}
+                                className="input w-full"
+                                defaultValue=""
+                            >
+                                <option value="">-- Chọn mẫu để tự động điền giá --</option>
+                                {priceTemplates.map((price) => (
+                                    <option key={price.id} value={price.id}>
+                                        {price.priceName}
+                                    </option>
+                                ))}
+                            </select>
+                            <p className="text-xs text-primary-600 mt-2">
+                                💡 Chọn mẫu giá để tự động điền các thông tin giá cả bên dưới
+                            </p>
+                        </div>
+                    )}
 
                     {/* Prices */}
                     <div className="space-y-4">

@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Building2, DoorOpen, Receipt, LogOut } from 'lucide-react';
+import { Home, Building2, DoorOpen, Receipt, Tag, LogOut } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { cn } from '../utils/cn';
 
@@ -12,6 +12,7 @@ export function Sidebar() {
         { to: '/houses', icon: Building2, label: 'Nhà trọ' },
         { to: '/rooms', icon: DoorOpen, label: 'Phòng trọ' },
         { to: '/payments', icon: Receipt, label: 'Hóa đơn' },
+        { to: '/prices', icon: Tag, label: 'Mẫu giá' },
     ];
 
     return (

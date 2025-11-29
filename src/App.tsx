@@ -12,6 +12,7 @@ import { DashboardPage } from './pages/dashboard/DashboardPage';
 import { HousesPage } from './pages/houses/HousesPage';
 import { RoomsPage } from './pages/rooms/RoomsPage';
 import { PaymentsPage } from './pages/payments/PaymentsPage';
+import { PricesPage } from './pages/prices/PricesPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -60,6 +61,7 @@ function App() {
             <Route path="houses" element={<HousesPage />} />
             <Route path="rooms" element={<RoomsPage />} />
             <Route path="payments" element={<PaymentsPage />} />
+            <Route path="prices" element={<PricesPage />} />
           </Route>
 
           {/* Catch all */}

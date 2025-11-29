@@ -5,6 +5,7 @@ const pageTitles: Record<string, string> = {
     '/houses': 'Nhà trọ',
     '/rooms': 'Phòng trọ',
     '/payments': 'Hóa đơn',
+    '/prices': 'Mẫu giá',
 };
 
 export function Header() {

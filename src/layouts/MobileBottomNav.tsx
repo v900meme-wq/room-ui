@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Building2, DoorOpen, Receipt } from 'lucide-react';
+import { Home, Building2, DoorOpen, Receipt, Tag } from 'lucide-react';
 import { cn } from '../utils/cn';
 
 export function MobileBottomNav() {
@@ -8,6 +8,7 @@ export function MobileBottomNav() {
         { to: '/houses', icon: Building2, label: 'Nhà' },
         { to: '/rooms', icon: DoorOpen, label: 'Phòng' },
         { to: '/payments', icon: Receipt, label: 'Hóa đơn' },
+        { to: '/prices', icon: Tag, label: 'Giá' },
     ];
 
     return (

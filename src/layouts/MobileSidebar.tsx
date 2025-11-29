@@ -1,6 +1,7 @@
+// src/layouts/MobileSidebar.tsx (Updated)
 import { useState } from 'react';
-// import { NavLink } from 'react-router-dom';
 import { Menu, X, LogOut } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '../store/authStore';
 import { cn } from '../utils/cn';
 
@@ -8,15 +9,12 @@ export function MobileSidebar() {
     const [isOpen, setIsOpen] = useState(false);
     const user = useAuthStore((state) => state.user);
     const clearAuth = useAuthStore((state) => state.clearAuth);
-
-    // const navItems = [
-    //     // { to: '/dashboard', icon: Home, label: 'Trang chủ' },
-    //     // { to: '/houses', icon: Building2, label: 'Nhà trọ' },
-    //     // { to: '/rooms', icon: DoorOpen, label: 'Phòng trọ' },
-    //     // { to: '/payments', icon: Receipt, label: 'Hóa đơn' },
-    // ];
+    const queryClient = useQueryClient();
 
     const handleLogout = () => {
+        // Clear React Query cache
+        queryClient.clear();
+        // Clear auth state
         clearAuth();
         setIsOpen(false);
     };
@@ -71,28 +69,6 @@ export function MobileSidebar() {
                         </div>
                     </div>
                 </div>
-
-                {/* Navigation */}
-                {/* <nav className="flex-1 p-4 space-y-1">
-                    {navItems.map((item) => (
-                        <NavLink
-                            key={item.to}
-                            to={item.to}
-                            onClick={() => setIsOpen(false)}
-                            className={({ isActive }) =>
-                                cn(
-                                    'flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors',
-                                    isActive
-                                        ? 'bg-primary-50 text-primary-600'
-                                        : 'text-gray-700 hover:bg-gray-100'
-                                )
-                            }
-                        >
-                            <item.icon className="w-5 h-5" />
-                            {item.label}
-                        </NavLink>
-                    ))}
-                </nav> */}
 
                 {/* Logout */}
                 <div className="p-4 border-t">
