@@ -7,6 +7,7 @@ export interface Price {
     electPrice: number;
     waterPrice: number;
     trashFee: number;
+    parkingFee: number;  // ← Thêm field này
     washingMachineFee: number;
     elevatorFee: number;
     deposit: number;

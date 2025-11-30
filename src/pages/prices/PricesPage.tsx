@@ -157,6 +157,12 @@ export function PricesPage() {
                                         </p>
                                     </div>
                                     <div className="bg-gray-50 rounded-lg p-2">
+                                        <p className="text-gray-600 text-xs">Gửi xe</p>
+                                        <p className="font-semibold text-gray-900">
+                                            {formatCurrency(price.parkingFee)}
+                                        </p>
+                                    </div>
+                                    <div className="bg-gray-50 rounded-lg p-2">
                                         <p className="text-gray-600 text-xs">Máy giặt</p>
                                         <p className="font-semibold text-gray-900">
                                             {formatCurrency(price.washingMachineFee)}

@@ -16,6 +16,7 @@ export function PriceModal({ price, onClose, onSubmit, isLoading }: PriceModalPr
         electPrice: '' as string | number,
         waterPrice: '' as string | number,
         trashFee: '' as string | number,
+        parkingFee: '' as string | number,  // ← Thêm field này
         washingMachineFee: '' as string | number,
         elevatorFee: '' as string | number,
         deposit: '' as string | number,
@@ -29,6 +30,7 @@ export function PriceModal({ price, onClose, onSubmit, isLoading }: PriceModalPr
                 electPrice: price.electPrice,
                 waterPrice: price.waterPrice,
                 trashFee: price.trashFee,
+                parkingFee: price.parkingFee,  // ← Thêm field này
                 washingMachineFee: price.washingMachineFee,
                 elevatorFee: price.elevatorFee,
                 deposit: price.deposit,
@@ -49,6 +51,7 @@ export function PriceModal({ price, onClose, onSubmit, isLoading }: PriceModalPr
             electPrice: formData.electPrice === '' ? 0 : Number(formData.electPrice),
             waterPrice: formData.waterPrice === '' ? 0 : Number(formData.waterPrice),
             trashFee: formData.trashFee === '' ? 0 : Number(formData.trashFee),
+            parkingFee: formData.parkingFee === '' ? 0 : Number(formData.parkingFee),  // ← Thêm field này
             washingMachineFee: formData.washingMachineFee === '' ? 0 : Number(formData.washingMachineFee),
             elevatorFee: formData.elevatorFee === '' ? 0 : Number(formData.elevatorFee),
             deposit: formData.deposit === '' ? 0 : Number(formData.deposit),
@@ -169,6 +172,21 @@ export function PriceModal({ price, onClose, onSubmit, isLoading }: PriceModalPr
                                     type="text"
                                     value={formatNumber(formData.trashFee)}
                                     onChange={(e) => handleNumberChange('trashFee', e.target.value)}
+                                    className="input w-full"
+                                    placeholder="0"
+                                />
+                                <p className="text-xs text-gray-500 mt-1">/ tháng</p>
+                            </div>
+
+                            {/* ← Thêm field Gửi xe */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Gửi xe (VNĐ)
+                                </label>
+                                <input
+                                    type="text"
+                                    value={formatNumber(formData.parkingFee)}
+                                    onChange={(e) => handleNumberChange('parkingFee', e.target.value)}
                                     className="input w-full"
                                     placeholder="0"
                                 />

@@ -81,6 +81,7 @@ export function RoomModal({
                 electPrice: selectedPrice.electPrice,
                 waterPrice: selectedPrice.waterPrice,
                 trashFee: selectedPrice.trashFee,
+                parkingFee: selectedPrice.parkingFee,  // ← Thêm dòng này
                 washingMachineFee: selectedPrice.washingMachineFee,
                 elevatorFee: selectedPrice.elevatorFee,
                 deposit: selectedPrice.deposit,
