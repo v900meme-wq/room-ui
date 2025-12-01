@@ -23,7 +23,7 @@ export function PaymentsPage() {
     const [filters, setFilters] = useState({
         houseId: undefined as number | undefined,
         roomId: undefined as number | undefined,
-        month: undefined as number | undefined,  // ← Đổi thành undefined
+        month: undefined as number | undefined,
         year: getCurrentYear() as number | undefined,
         status: undefined as string | undefined,
     });
@@ -44,8 +44,8 @@ export function PaymentsPage() {
         enabled: !!filters.houseId,
     });
 
-    // Fetch payments
-    const { data: payments, isLoading } = useQuery({
+    // Fetch all payments
+    const { data: allPayments, isLoading } = useQuery({
         queryKey: ['payments', filters],
         queryFn: () => paymentService.getAll({
             roomId: filters.roomId,
@@ -53,6 +53,12 @@ export function PaymentsPage() {
             year: filters.year,
             status: filters.status,
         }),
+    });
+
+    // Filter payments by house on frontend
+    const payments = allPayments?.filter(payment => {
+        if (!filters.houseId) return true;
+        return payment.room?.house?.id === filters.houseId;
     });
 
     // Create/Update mutation
