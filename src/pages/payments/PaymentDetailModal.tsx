@@ -66,11 +66,11 @@ export function PaymentDetailModal({ payment, onClose, onEdit }: PaymentDetailMo
                                     </div>
                                     <div className="space-y-1 md:space-y-1.5 text-xs md:text-sm text-yellow-700">
                                         <div className="flex justify-between">
-                                            <span>Đầu:</span>
+                                            <span>Cũ:</span>
                                             <span className="font-medium">{payment.electStart}</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span>Cuối:</span>
+                                            <span>Mới:</span>
                                             <span className="font-medium">{payment.electEnd}</span>
                                         </div>
                                         <div className="flex justify-between pt-1 border-t border-yellow-200">
@@ -92,11 +92,11 @@ export function PaymentDetailModal({ payment, onClose, onEdit }: PaymentDetailMo
                                     </div>
                                     <div className="space-y-1 md:space-y-1.5 text-xs md:text-sm text-blue-700">
                                         <div className="flex justify-between">
-                                            <span>Đầu:</span>
+                                            <span>Cũ:</span>
                                             <span className="font-medium">{payment.waterStart}</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span>Cuối:</span>
+                                            <span>Mới:</span>
                                             <span className="font-medium">{payment.waterEnd}</span>
                                         </div>
                                         <div className="flex justify-between pt-1 border-t border-blue-200">

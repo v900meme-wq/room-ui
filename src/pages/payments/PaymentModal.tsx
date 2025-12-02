@@ -123,12 +123,12 @@ export function PaymentModal({ payment, onClose, onSubmit, isLoading }: PaymentM
         const waterEnd = formData.waterEnd === '' ? 0 : Number(formData.waterEnd);
 
         if (electEnd < electStart) {
-            alert('Chỉ số điện cuối phải lớn hơn hoặc bằng chỉ số đầu');
+            alert('Chỉ số điện mới phải lớn hơn hoặc bằng chỉ số cũ');
             return;
         }
 
         if (waterEnd < waterStart) {
-            alert('Chỉ số nước cuối phải lớn hơn hoặc bằng chỉ số đầu');
+            alert('Chỉ số nước mới phải lớn hơn hoặc bằng chỉ số cũ');
             return;
         }
 
@@ -312,7 +312,7 @@ export function PaymentModal({ payment, onClose, onSubmit, isLoading }: PaymentM
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Điện đầu
+                                    Điện cũ
                                 </label>
                                 <input
                                     type="number"
@@ -327,7 +327,7 @@ export function PaymentModal({ payment, onClose, onSubmit, isLoading }: PaymentM
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Điện cuối
+                                    Điện mới
                                 </label>
                                 <input
                                     type="number"
@@ -342,7 +342,7 @@ export function PaymentModal({ payment, onClose, onSubmit, isLoading }: PaymentM
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Nước đầu
+                                    Nước cũ
                                 </label>
                                 <input
                                     type="number"
@@ -357,7 +357,7 @@ export function PaymentModal({ payment, onClose, onSubmit, isLoading }: PaymentM
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Nước cuối
+                                    Nước mới
                                 </label>
                                 <input
                                     type="number"
